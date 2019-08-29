@@ -68,12 +68,21 @@ if __name__ == '__main__':
 
     '''run'''
     rounds = math.ceil(len(words_list) / workers)
-    for n in range(rounds):
-        run_list = words_list[i:i+workers]
-        i += workers
-        msg = '>>> Running Batch [%d]' %(n)
+    if rounds == 1:
+        run_list = words_list
+        msg = '>>> Running Batch [0]'
         print(msg)
-        with multiprocessing.Pool(processes=workers) as pool:
+        with multiprocessing.Pool(processes=len(words_list)) as pool:
             pool.map(match_word, run_list)
             pool.terminate()
             pool.join()
+    else:
+        for n in range(rounds):
+            run_list = words_list[i:i+workers]
+            i += workers
+            msg = '>>> Running Batch [%d]' %(n)
+            print(msg)
+            with multiprocessing.Pool(processes=workers) as pool:
+                pool.map(match_word, run_list)
+                pool.terminate()
+                pool.join()
